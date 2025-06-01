@@ -1,8 +1,9 @@
 # Stage 1: Build the frontend application
-# Using a Node.js image to compile your JavaScript/frontend code
+# Uses a Node.js image to compile your JavaScript/frontend code
 FROM node:18-alpine AS builder
 
 # Set the working directory inside this build container
+# This is where package.json should be and where npm commands will run from.
 WORKDIR /app
 
 # Copy package.json and package-lock.json (or yarn.lock) first.
@@ -12,33 +13,28 @@ COPY package*.json ./
 # Install your project's Node.js dependencies
 RUN npm install
 
-# Copy the rest of your application's source code into the container
+# Copy the rest of your application's source code into the container.
+# This will copy your 'src' directory (containing main.js) and other project files.
 COPY . .
 
-# *** IMPORTANT: CUSTOMIZE THIS LINE ***
+# *** YOU MUST VERIFY THIS COMMAND! ***
 # This command runs your build script (e.g., build.js) to create the static assets.
-# Replace 'npm run build' with the exact command you use locally to build your project.
-# Examples: 'npm run build', 'node build.js', 'yarn build', etc.
+# Common for Node.js frontends.
+# If your actual command is different (e.g., 'node build.js', 'yarn build', 'npm run webpack'), CHANGE THIS.
 RUN npm run build
 
 # Stage 2: Serve the compiled frontend application using a lightweight Nginx web server
 # This creates a very small final image, as it doesn't include Node.js or build tools.
 FROM nginx:alpine
 
-# *** IMPORTANT: CUSTOMIZE THIS LINE ***
+# *** YOU MUST VERIFY THIS PATH! ***
 # This copies the STATIC FILES produced by your build step (from Stage 1)
 # into the Nginx web server's default serving directory.
-# You MUST replace '/app/build' with the actual directory name where your build script
-# (e.g., build.js) outputs the compiled static files.
-# Common output directory names are 'build', 'dist', 'out', or 'public_html'.
+# 'build' is the most common output directory for 'npm run build'.
+# If your build script outputs to a different directory (e.g., '/app/dist', '/app/out'), CHANGE THIS.
 COPY --from=builder /app/build /usr/share/nginx/html
 
-# Optionally, if you have a custom Nginx configuration, you can copy it here.
-# For example, if you have an 'nginx.conf' file in your repo root under an 'nginx' folder:
-# COPY ./nginx/nginx.conf /etc/nginx/conf.d/default.conf
-
 # Expose the port Nginx listens on. Standard for HTTP is 80.
-# If your application needs to be served on a different port, change this.
 EXPOSE 80
 
 # Command to run Nginx when the container starts.
