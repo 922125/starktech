@@ -30,8 +30,8 @@ jobs:
         # OPTION 1: For Docker Hub
         # Make sure you have created DOCKER_USERNAME and DOCKER_TOKEN secrets in your GitHub repo settings.
         # Your Docker username is 922125.
-        username: ${{ secrets.DOCKER_USERNAME }} # Value should be 922125
-        password: ${{ secrets.DOCKER_TOKEN }}    # You MUST create this secret with your Docker Hub Access Token
+        username: ${{ secrets.922125 }} # Value should be 922125
+        password: ${{ secrets.dckr_pat_QX1ee6wNpoztVF2sW1SoD6CyoUo }}    # You MUST create this secret with your Docker Hub Access Token
         #
         # OPTION 2: For GitHub Container Registry (GHCR - ghcr.io)
         # Make sure you have created GHCR_TOKEN secret (GitHub PAT with 'write:packages' scope) in your GitHub repo settings.
